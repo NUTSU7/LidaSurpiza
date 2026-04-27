@@ -11,13 +11,11 @@
         
         button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; text-align: center; opacity: 0; }
-        .active { display: flex; animation: quickFade 0.4s ease-out forwards; }
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; text-align: center; }
+        .active { display: flex; }
         
-        @keyframes quickFade { from { opacity: 0; } to { opacity: 1; } }
-
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .active .animated-element { animation: slideUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; animation-delay: 0.15s; opacity: 0; }
+        .active .animated-element { animation: slideUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; animation-delay: 0.1s; opacity: 0; }
         
         .bg-img3 { background: url('img3.png') no-repeat center center/cover; }
         
@@ -79,10 +77,10 @@
 
         /* --- SCREEN 8 --- */
         #screen8 { background: #000 url('starmap.png') no-repeat center center; background-size: contain; }
-        .screen8-text { position: absolute; top: 80px; width: 90%; background: transparent; border: none; padding: 0 15px; font-style: italic; font-size: 1.4rem; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px #000, 0 0 10px #000, 0 0 20px #000; }
+        .screen8-text { position: absolute; top: 40px; width: 90%; background: transparent; border: none; padding: 0 15px; font-style: italic; font-size: 1.4rem; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px #000, 0 0 10px #000, 0 0 20px #000; }
 
         /* --- SCREEN 9 (LETTER) --- */
-        .letter-paper { background: #fdf5e6; color: #333; width: 90%; max-width: 400px; border-radius: 5px; padding: 40px 25px; font-family: 'Georgia', serif; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); line-height: 1.5; font-size: 1.05rem; }
+        .letter-paper { background: #fdf5e6; color: #333; width: 90%; max-width: 400px; border-radius: 5px; padding: 40px 25px; font-family: 'Georgia', serif; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); line-height: 1.5; font-size: 1.05rem; margin-bottom: 80px; }
         .letter-paper p { margin-bottom: 8px; }
         .letter-title { color: #5a4b81; font-size: 1.6rem; font-weight: bold; margin-bottom: 25px !important; }
 
@@ -111,24 +109,29 @@
         .flame { width: 12px; height: 18px; background: #ffaa00; border-radius: 50% 50% 20% 20%; position: absolute; top: -18px; box-shadow: 0 0 15px 5px rgba(255, 170, 0, 0.6); animation: flicker 0.4s infinite alternate; }
         @keyframes flicker { 0% { opacity: 0.8; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
         
-        .flame.blow-out { animation: blowOutAnim 0.6s ease-out forwards; }
+        /* Animație mult mai lungă și mai dramatică pentru stingerea lumânării (1.5s) */
+        .flame.blow-out { animation: blowOutAnim 1.5s ease-out forwards; }
         @keyframes blowOutAnim { 
             0% { opacity: 1; transform: scale(1) skewX(0deg); } 
-            30% { opacity: 0.8; transform: scale(1.2) skewX(-20deg) translateX(5px) translateY(-5px); background: #ff3300; box-shadow: none; } 
-            100% { opacity: 0; transform: scale(0) skewX(-40deg) translateX(15px) translateY(-20px); background: #888; box-shadow: none; } 
+            20% { opacity: 0.9; transform: scale(1.2) skewX(-30deg) translateX(8px) translateY(-5px); background: #ff3300; box-shadow: none; } 
+            60% { opacity: 0.6; transform: scale(0.8) skewX(-50deg) translateX(25px) translateY(-15px); background: #666; box-shadow: none; }
+            100% { opacity: 0; transform: scale(0) skewX(-60deg) translateX(45px) translateY(-30px); background: #333; box-shadow: none; } 
         }
         
         .candle-num { position: absolute; top: -65px; color: #fff; font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif; font-weight: 900; font-size: 2.2rem; text-shadow: 0 4px 10px rgba(255, 215, 0, 0.9), 0 0 5px #ffaa00; animation: floatNum 2s ease-in-out infinite; }
         @keyframes floatNum { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         
-        .fade-out { opacity: 0 !important; pointer-events: none; }
+        .fade-out { opacity: 0 !important; pointer-events: none; transition: opacity 0.4s ease; }
         
         #final-message { display: none; position: absolute; top: 12%; width: 100%; text-align: center; z-index: 20; color: #ffeb3b; font-size: clamp(2rem, 9vw, 3.5rem); font-weight: bold; text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 10px #ff1493; line-height: 1.2; padding: 0 10px; }
         .pop-in-anim { animation: finalPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes finalPop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .confetti { position: absolute; z-index: 1000; animation: fall linear forwards; pointer-events: none; }
-        @keyframes fall { 0% { transform: translateY(-10vh) rotate3d(1, 1, 1, 0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate3d(1, 1, 1, 720deg); opacity: 0; } }
+        .confetti { position: absolute; z-index: 1000; animation: fall linear forwards; pointer-events: none; will-change: transform; top: -20px; }
+        @keyframes fall { 
+            0% { transform: translateY(0) rotateX(0) rotateY(0); opacity: 1; } 
+            100% { transform: translateY(110vh) rotateX(360deg) rotateY(360deg); opacity: 0; } 
+        }
     </style>
 </head>
 <body>
@@ -168,17 +171,17 @@
 
     <section id="screen3" class="screen">
         <h1 class="animated-element">A fost odată ca niciodată</h1>
-        <button class="arrow-btn bottom-arrow animated-element" style="animation-delay: 0.4s;" onclick="goTo(4)"></button>
+        <button class="arrow-btn bottom-arrow animated-element" style="animation-delay: 0.3s;" onclick="goTo(4)"></button>
     </section>
 
     <section id="screen4" class="screen bg-img3">
         <div class="polaroid animated-element">
-            <img src="img4.JPG" alt="Noi">
+            <img src="img4.jpg" alt="Noi">
             <div class="initials">
                 M <span class="heart-plus">❤️‍🔥</span> L
             </div>
         </div>
-        <button class="arrow-btn bottom-arrow animated-element" style="animation-delay: 0.4s;" onclick="goTo(5)"></button>
+        <button class="arrow-btn bottom-arrow animated-element" style="animation-delay: 0.3s;" onclick="goTo(5)"></button>
     </section>
 
     <section id="screen5" class="screen bg-img3">
@@ -228,7 +231,7 @@
         <div id="cake-main-text" class="animated-element">SUFLĂ ÎN LUMÂNĂRI</div>
         <div id="final-message">LA MULȚI ANI<br>IUBIREA MEA</div>
         
-        <div class="cake-container animated-element" style="animation-delay: 0.2s;">
+        <div class="cake-container animated-element" style="animation-delay: 0.1s;">
             <div id="cake-inner">
                 <div class="cake-tier tier-bottom"></div>
                 <div class="cake-tier tier-middle"></div>
@@ -245,11 +248,10 @@
             </div>
         </div>
 
-        <div id="cake-sub-text" class="animated-element" style="animation-delay: 0.4s;">Apasă de 2 ori pe ecran pentru dorință</div>
+        <div id="cake-sub-text" class="animated-element" style="animation-delay: 0.3s;">Apasă de 2 ori pe ecran pentru dorință</div>
     </section>
 
     <script>
-        // --- PRELOADER PENTRU IMAGINI (Rezolvă problema afișării lente) ---
         window.addEventListener('load', () => {
             const imagesToPreload = ['img1.JPG', 'img2.png', 'img3.png', 'img4.jpg', 'map.png', 'starmap.png'];
             imagesToPreload.forEach(src => {
@@ -322,71 +324,79 @@
                 fireConfetti();
                 cakeFinished = true; 
                 
+                // 1. Începe animația de suflare
                 document.querySelectorAll('.flame').forEach(f => {
                     f.classList.add('blow-out');
                 });
 
-                document.getElementById('cake-inner').classList.add('celebrate-cake');
-                
-                let countdownNum = 5;
-                const subText = document.getElementById('cake-sub-text');
-                
-                subText.classList.add('fade-out');
-                
+                // Setăm o mică întârziere (800ms) ca utilizatorul să aibă timp
+                // să vadă efectiv flacăra cum se stinge, ÎNAINTE ca tortul să sară 
+                // și să apară numărătoarea.
                 setTimeout(() => {
-                    subText.classList.remove('fade-out');
-                    subText.style.fontSize = '4rem';
-                    subText.style.fontWeight = 'bold';
-                    subText.style.color = '#ffeb3b';
-                    subText.style.textShadow = '0 0 15px rgba(255,235,59,0.8)';
-                    subText.innerText = countdownNum;
+                    document.getElementById('cake-inner').classList.add('celebrate-cake');
+                    
+                    let countdownNum = 5;
+                    const subText = document.getElementById('cake-sub-text');
+                    
+                    subText.classList.add('fade-out');
+                    
+                    setTimeout(() => {
+                        subText.classList.remove('fade-out');
+                        subText.style.fontSize = '4rem';
+                        subText.style.fontWeight = 'bold';
+                        subText.style.color = '#ffeb3b';
+                        subText.style.textShadow = '0 0 15px rgba(255,235,59,0.8)';
+                        subText.innerText = countdownNum;
 
-                    const timer = setInterval(() => {
-                        countdownNum--;
-                        if (countdownNum > 0) {
-                            subText.innerText = countdownNum;
-                            subText.style.transform = 'scale(1.3)';
-                            setTimeout(() => { subText.style.transform = 'scale(1)'; }, 150);
-                        } else {
-                            clearInterval(timer);
-                            
-                            subText.style.visibility = 'hidden'; 
-                            document.getElementById('cake-main-text').classList.add('fade-out');
-                            
-                            setTimeout(() => {
-                                const finalMsg = document.getElementById('final-message');
-                                finalMsg.style.display = 'block';
-                                finalMsg.classList.add('pop-in-anim');
-                            }, 400); 
-                        }
-                    }, 1000);
-                }, 400); 
+                        const timer = setInterval(() => {
+                            countdownNum--;
+                            if (countdownNum > 0) {
+                                subText.innerText = countdownNum;
+                                subText.style.transform = 'scale(1.3)';
+                                setTimeout(() => { subText.style.transform = 'scale(1)'; }, 150);
+                            } else {
+                                clearInterval(timer);
+                                
+                                subText.style.visibility = 'hidden'; 
+                                document.getElementById('cake-main-text').classList.add('fade-out');
+                                
+                                setTimeout(() => {
+                                    // Ascunde definitiv elementele de flacără
+                                    document.querySelectorAll('.flame').forEach(f => f.style.display = 'none');
+                                    
+                                    const finalMsg = document.getElementById('final-message');
+                                    finalMsg.style.display = 'block';
+                                    finalMsg.classList.add('pop-in-anim');
+                                }, 400); 
+                            }
+                        }, 1000);
+                    }, 400); 
+                }, 800); // <-- Întârzierea care te lasă să admiri animația
             }
         }
 
         function fireConfetti() {
             const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff1493'];
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 75; i++) {
                 const conf = document.createElement('div');
                 conf.classList.add('confetti');
                 conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = -10 + 'px';
                 conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 
                 if (Math.random() > 0.5) {
                     conf.style.borderRadius = '50%';
-                    conf.style.width = (Math.random() * 10 + 5) + 'px';
+                    conf.style.width = (Math.random() * 8 + 6) + 'px';
                     conf.style.height = conf.style.width;
                 } else {
-                    conf.style.width = (Math.random() * 10 + 5) + 'px';
-                    conf.style.height = (Math.random() * 15 + 10) + 'px';
+                    conf.style.width = (Math.random() * 8 + 6) + 'px';
+                    conf.style.height = (Math.random() * 12 + 8) + 'px';
                 }
 
-                conf.style.animationDuration = (Math.random() * 4 + 3) + 's';
-                conf.style.animationDelay = (Math.random() * 2) + 's';
+                conf.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                conf.style.animationDelay = (Math.random() * 1.5) + 's';
                 
                 document.body.appendChild(conf);
-                setTimeout(() => conf.remove(), 8000);
+                setTimeout(() => conf.remove(), 7000);
             }
         }
     </script>
