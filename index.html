@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>La Multi Ani!</title>
+    <style>
+        /* --- GLOBAL STYLES & MOBILE OPTIMIZATIONS --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #000; color: #fff; overflow: hidden; height: 100vh; width: 100vw; -webkit-font-smoothing: antialiased; }
+        
+        button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; text-align: center; opacity: 0; }
+        .active { display: flex; animation: quickFade 0.4s ease-out forwards; }
+        
+        @keyframes quickFade { from { opacity: 0; } to { opacity: 1; } }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .active .animated-element { animation: slideUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; animation-delay: 0.15s; opacity: 0; }
+        
+        .bg-img3 { background: url('img3.png') no-repeat center center/cover; }
+        
+        .arrow-btn { background: none; border: none; color: #fff; font-size: 2.5rem; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.8); z-index: 10; transition: transform 0.2s, opacity 0.2s; padding: 15px; }
+        .arrow-btn:active { transform: scale(0.85); opacity: 0.7; }
+        .arrow-btn::after { content: '➔'; }
+        .bottom-arrow { position: absolute; bottom: 30px; }
+
+        /* --- SCREEN 0: INTERACTION WALL --- */
+        #screen0 { z-index: 100; background: #000; }
+        #screen0 button { padding: 15px 30px; font-size: 1.2rem; border-radius: 30px; border: none; background: #fff; color: #000; font-weight: bold; box-shadow: 0 4px 15px rgba(255,255,255,0.2); transition: transform 0.1s; }
+        #screen0 button:active { transform: scale(0.92); }
+
+        /* --- SCREEN 1: VIDEO --- */
+        #screen1 { background: #000; }
+        #screen1 video { width: 100vw; height: 100vh; object-fit: cover; object-position: 52% center; } 
+
+        /* --- SCREEN 2: LOCKSCREEN --- */
+        #screen2 { background: url('img1.JPG') no-repeat center center/cover; justify-content: flex-start; padding-top: 10vh; }
+        .lock-overlay { background: rgba(0,0,0,0.4); width: 100%; height: 100%; position: absolute; top:0; left:0; z-index: -1; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        .lock-title { font-size: 1.2rem; margin-bottom: 5px; }
+        .lock-hint { font-size: 0.9rem; opacity: 0.8; margin-bottom: 30px; }
+        .dots { display: flex; gap: 15px; margin-bottom: 40px; height: 20px; align-items: center; }
+        .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #fff; transition: background 0.1s, transform 0.1s; }
+        .dot.filled { background: #fff; transform: scale(1.1); }
+        .numpad { display: grid; grid-template-columns: repeat(3, 75px); gap: 20px; }
+        .num-btn { width: 75px; height: 75px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: #fff; font-size: 2rem; font-weight: 300; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background 0.1s; }
+        .num-btn:active { background: rgba(255,255,255,0.4); }
+        .zero-btn { grid-column: 2; }
+        .delete-btn { grid-column: 3; font-size: 1.6rem; background: rgba(255,100,100,0.1); }
+        .shake { animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        /* --- SCREEN 3 --- */
+        #screen3 { background: url('img2.png') no-repeat center center/cover; }
+        #screen3 h1 { font-family: 'Georgia', serif; font-size: 2rem; font-style: italic; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); }
+
+        /* --- SCREEN 4 --- */
+        .polaroid { background: #fff; padding: 10px 10px 30px 10px; border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 40px; animation: floatPolaroid 4s ease-in-out infinite; }
+        @keyframes floatPolaroid { 0%, 100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(-3deg) translateY(-10px); } }
+        .polaroid img { width: 250px; height: 250px; object-fit: cover; }
+        .initials { color: #000; font-family: 'Courier New', Courier, monospace; font-size: 2rem; font-weight: bold; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .heart-plus { color: red; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; }
+
+        /* --- SCREEN 5 & 6 --- */
+        .pale-rect { background: rgba(255,255,255,0.9); width: 85%; border-radius: 15px; padding: 30px 20px; color: #333; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .italic-text { font-family: 'Georgia', serif; font-style: italic; }
+        
+        .map-container { position: relative; width: 220px; height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px auto; }
+        .map-heart { width: 150px; height: 150px; background: url('map.png') center/cover; position: absolute; 
+            clip-path: path('M75,25 C75,25 60,-15 25,10 C-10,35 25,90 75,130 C125,90 160,35 125,10 C90,-15 75,25 75,25 Z'); 
+            transform: scale(1.6); 
+        }
+        .pin { position: absolute; top: 38%; z-index: 2; color: red; font-size: 2rem; text-shadow: 0 0 5px white; animation: floatNum 2s ease-in-out infinite; }
+        .pin-text { position: absolute; top: 62%; z-index: 2; font-weight: 900; color: #000; text-shadow: 0 0 8px #fff, 0 0 15px #fff; font-size: 1.1rem; letter-spacing: 1px; }
+        
+        .star-icon { font-size: 5rem; color: gold; margin: 30px 0; animation: starGlow 2s infinite alternate; }
+        @keyframes starGlow { from { text-shadow: 0 0 10px rgba(255,215,0,0.5); transform: scale(1); } to { text-shadow: 0 0 30px rgba(255,215,0,1); transform: scale(1.1); } }
+
+        /* --- SCREEN 8 --- */
+        #screen8 { background: #000 url('starmap.png') no-repeat center center; background-size: contain; }
+        .screen8-text { position: absolute; top: 80px; width: 90%; background: transparent; border: none; padding: 0 15px; font-style: italic; font-size: 1.4rem; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px #000, 0 0 10px #000, 0 0 20px #000; }
+
+        /* --- SCREEN 9 (LETTER) --- */
+        .letter-paper { background: #fdf5e6; color: #333; width: 90%; max-width: 400px; border-radius: 5px; padding: 40px 25px; font-family: 'Georgia', serif; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); line-height: 1.5; font-size: 1.05rem; }
+        .letter-paper p { margin-bottom: 8px; }
+        .letter-title { color: #5a4b81; font-size: 1.6rem; font-weight: bold; margin-bottom: 25px !important; }
+
+        /* --- SCREEN 10 (CAKE & CONFETTI) --- */
+        /* Textul de sus stă mult mai sus acum, pentru a nu se suprapune cu flăcările */
+        #cake-main-text { font-size: 2.2rem; font-weight: bold; height: 60px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; text-align: center; transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 10; }
+        #cake-sub-text { font-size: 1rem; opacity: 0.8; height: 60px; display: flex; align-items: flex-start; justify-content: center; transition: all 0.3s ease; padding-top: 10px; }
+        
+        /* Marginea tortului împinsă masiv în jos pentru spațiere aerisită */
+        .cake-container { margin-top: 110px; margin-bottom: 40px; position: relative; width: 220px; height: 180px; }
+        
+        #cake-inner { position: relative; width: 100%; height: 100%; }
+        .celebrate-cake { animation: floatCake 3s ease-in-out infinite; }
+        @keyframes floatCake { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        .cake-tier { border-radius: 10px; border: 2px solid rgba(255,255,255,0.4); position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .tier-bottom { width: 200px; height: 60px; bottom: 0; background: #ffb6c1; z-index: 1; }
+        .tier-middle { width: 160px; height: 60px; bottom: 60px; background: #ff69b4; z-index: 2; border-bottom: none; border-radius: 10px 10px 0 0; }
+        .tier-top { width: 120px; height: 60px; bottom: 120px; background: #ff1493; z-index: 3; border-bottom: none; border-radius: 10px 10px 0 0; }
+        
+        @keyframes popInCandle { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+
+        .candle { width: 14px; height: 50px; background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ff99cc 5px, #ff99cc 10px); border: 1px solid #ff66aa; border-radius: 3px; position: absolute; bottom: 180px; display: none; flex-direction: column; align-items: center; justify-content: flex-end; z-index: 4; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .candle.show { display: flex; animation: popInCandle 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .candle-1 { left: 35%; }
+        .candle-2 { left: 65%; }
+        
+        /* Flacăra inițială */
+        .flame { width: 12px; height: 18px; background: #ffaa00; border-radius: 50% 50% 20% 20%; position: absolute; top: -18px; box-shadow: 0 0 15px 5px rgba(255, 170, 0, 0.6); animation: flicker 0.4s infinite alternate; }
+        @keyframes flicker { 0% { opacity: 0.8; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
+        
+        /* Animația specială când o sufli */
+        .flame.blow-out { animation: blowOutAnim 0.6s ease-out forwards; }
+        @keyframes blowOutAnim { 
+            0% { opacity: 1; transform: scale(1) skewX(0deg); } 
+            30% { opacity: 0.8; transform: scale(1.2) skewX(-20deg) translateX(5px) translateY(-5px); background: #ff3300; box-shadow: none; } 
+            100% { opacity: 0; transform: scale(0) skewX(-40deg) translateX(15px) translateY(-20px); background: #888; box-shadow: none; } 
+        }
+        
+        .candle-num { position: absolute; top: -65px; color: #fff; font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif; font-weight: 900; font-size: 2.2rem; text-shadow: 0 4px 10px rgba(255, 215, 0, 0.9), 0 0 5px #ffaa00; animation: floatNum 2s ease-in-out infinite; }
+        @keyframes floatNum { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        
+        .fade-out { opacity: 0 !important; pointer-events: none; }
+        
+        #final-message { display: none; position: absolute; top: 12%; width: 100%; text-align: center; z-index: 20; color: #ffeb3b; font-size: clamp(2rem, 9vw, 3.5rem); font-weight: bold; text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 10px #ff1493; line-height: 1.2; padding: 0 10px; }
+        .pop-in-anim { animation: finalPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes finalPop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .confetti { position: absolute; z-index: 1000; animation: fall linear forwards; pointer-events: none; }
+        @keyframes fall { 0% { transform: translateY(-10vh) rotate3d(1, 1, 1, 0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate3d(1, 1, 1, 720deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <section id="screen0" class="screen active">
+        <button onclick="startApp()">Apasă pentru a deschide cadoul 🎁</button>
+    </section>
+
+    <section id="screen1" class="screen">
+        <video id="introVideo" playsinline preload="auto">
+            <source src="0425.mp4" type="video/mp4">
+        </video>
+    </section>
+
+    <section id="screen2" class="screen">
+        <div class="lock-overlay"></div>
+        <div class="lock-title animated-element">Introduceți codul de acces</div>
+        <div class="lock-hint animated-element" style="animation-delay: 0.2s;">👉 Indiciu: Ziua ta de naștere❤️</div>
+        <div class="dots animated-element" id="pin-dots" style="animation-delay: 0.3s;">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <div class="numpad animated-element" style="animation-delay: 0.4s;">
+            <button class="num-btn" onclick="addPin('1')">1</button>
+            <button class="num-btn" onclick="addPin('2')">2</button>
+            <button class="num-btn" onclick="addPin('3')">3</button>
+            <button class="num-btn" onclick="addPin('4')">4</button>
+            <button class="num-btn" onclick="addPin('5')">5</button>
+            <button class="num-btn" onclick="addPin('6')">6</button>
+            <button class="num-btn" onclick="addPin('7')">7</button>
+            <button class="num-btn" onclick="addPin('8')">8</button>
+            <button class="num-btn" onclick="addPin('9')">9</button>
+            <button class="num-btn zero-btn" onclick="addPin('0')">0</button>
+            <button class="num-btn delete-btn" onclick="deletePin()">⌫</button>
+        </div>
+    </section>
+
+    <section id="screen3" class="screen">
+        <h1 class="animated-element">A fost odată ca niciodată</h1>
+        <button class="arrow-btn bottom-arrow animated-element" style="animation-delay: 0.4s;" onclick="goTo(4)"></button>
+    </section>
+
+    <section id="screen4" class="screen bg-img3">
+        <div class="polaroid animated-element">
+            <img src="img4.jpg" alt="Noi">
+            <div class="initials">
+                M <span class="heart-plus">❤️‍🔥</span> L
+            </div>
+        </div>
+        <button class="arrow-btn bottom-arrow animated-element" style="animation-delay: 0.4s;" onclick="goTo(5)"></button>
+    </section>
+
+    <section id="screen5" class="screen bg-img3">
+        <div class="pale-rect animated-element">
+            <div class="italic-text" style="font-size: 1.2rem;">Unde a început</div>
+            <div class="map-container">
+                <div class="map-heart"></div>
+                <div class="pin">📍</div>
+                <div class="pin-text">CHIȘINĂU</div>
+            </div>
+            <div class="italic-text" style="font-size: 1.2rem; font-weight: bold;">POVESTEA NOASTRĂ</div>
+        </div>
+        <button class="arrow-btn bottom-arrow" onclick="goTo(6)"></button>
+    </section>
+
+    <section id="screen6" class="screen bg-img3">
+        <div class="pale-rect animated-element">
+            <div class="italic-text" style="font-size: 1.2rem;">Toate stelele s-au aliniat</div>
+            <div class="star-icon">⭐</div>
+            <div class="italic-text" style="font-size: 1.2rem; font-weight: bold;">când te-ai născut</div>
+        </div>
+        <button class="arrow-btn bottom-arrow" onclick="goTo(8)"></button>
+    </section>
+
+    <section id="screen8" class="screen">
+        <div class="screen8-text animated-element">
+            Undeva sub aceste stele, apare una dintre cele mai frumoase ființe din viața mea.
+        </div>
+        <button class="arrow-btn bottom-arrow" onclick="goTo(9)"></button>
+    </section>
+
+    <section id="screen9" class="screen bg-img3">
+        <div class="letter-paper animated-element">
+            <p class="letter-title">Dragostea mea, ❤️</p>
+            <p>Am vrut să îți las acest mesaj ca<br>să iți spun cât de mult insemni<br>pentru mine.</p>
+            <p>Fiecare clipă petrecută alături de<br>tine este una dintre cele mai<br>frumoase amintiri ale mele.</p>
+            <p>Îți mulțumesc că ești tu și că faci<br>lumea mea mai bună.</p>
+            <p>Această zi este despre tine...<br>și vreau să te am alături pentru tot restul vieții.</p>
+            <p style="margin-top: 15px;">Te iubesc! ❤️</p>
+            <p style="text-align: right; margin-top: 25px; font-weight: bold; font-size: 1.2rem;">Mihai</p>
+        </div>
+        <button class="arrow-btn bottom-arrow" onclick="goTo(10)"></button>
+    </section>
+
+    <section id="screen10" class="screen bg-img3" onclick="handleCakeClick()">
+        
+        <div id="cake-main-text" class="animated-element">SUFLĂ ÎN LUMÂNĂRI</div>
+        <div id="final-message">LA MULȚI ANI<br>IUBIREA MEA</div>
+        
+        <div class="cake-container animated-element" style="animation-delay: 0.2s;">
+            <div id="cake-inner">
+                <div class="cake-tier tier-bottom"></div>
+                <div class="cake-tier tier-middle"></div>
+                <div class="cake-tier tier-top"></div>
+                
+                <div class="candle candle-1" id="c1">
+                    <div class="candle-num">1</div>
+                    <div class="flame"></div>
+                </div>
+                <div class="candle candle-2" id="c2">
+                    <div class="candle-num">8</div>
+                    <div class="flame"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cake-sub-text" class="animated-element" style="animation-delay: 0.4s;">Apasă de 2 ori pe ecran pentru dorință</div>
+    </section>
+
+    <script>
+        function goTo(screenNumber) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen' + screenNumber).classList.add('active');
+        }
+
+        function startApp() {
+            goTo(1);
+            const video = document.getElementById('introVideo');
+            video.play();
+            video.onended = () => goTo(2);
+        }
+
+        const CORRECT_PIN = "290428";
+        let currentPin = "";
+        
+        function addPin(num) {
+            if (currentPin.length < 6) {
+                currentPin += num;
+                updateDots();
+            }
+            if (currentPin.length === 6) {
+                if (currentPin === CORRECT_PIN) {
+                    setTimeout(() => goTo(3), 300);
+                } else {
+                    const dotsContainer = document.getElementById('pin-dots');
+                    dotsContainer.classList.add('shake');
+                    setTimeout(() => {
+                        dotsContainer.classList.remove('shake');
+                        currentPin = "";
+                        updateDots();
+                    }, 400);
+                }
+            }
+        }
+
+        function deletePin() {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updateDots();
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index < currentPin.length) dot.classList.add('filled');
+                else dot.classList.remove('filled');
+            });
+        }
+
+        let cakeClicks = 0;
+        let cakeFinished = false;
+        
+        function handleCakeClick() {
+            if(cakeFinished) return;
+            
+            cakeClicks++;
+            if (cakeClicks === 1) {
+                document.getElementById('c1').classList.add('show');
+            } else if (cakeClicks === 2) {
+                document.getElementById('c2').classList.add('show');
+                fireConfetti();
+                cakeFinished = true; 
+                
+                // DECLANȘARE EXACTĂ LA ÎNCEPUTUL NUMĂRĂTORII
+                
+                // 1. Suflă flăcările
+                document.querySelectorAll('.flame').forEach(f => {
+                    f.classList.add('blow-out');
+                });
+
+                // 2. Pornește animația tortului plătitor
+                document.getElementById('cake-inner').classList.add('celebrate-cake');
+                
+                let countdownNum = 5;
+                const subText = document.getElementById('cake-sub-text');
+                
+                subText.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    subText.classList.remove('fade-out');
+                    subText.style.fontSize = '4rem';
+                    subText.style.fontWeight = 'bold';
+                    subText.style.color = '#ffeb3b';
+                    subText.style.textShadow = '0 0 15px rgba(255,235,59,0.8)';
+                    subText.innerText = countdownNum;
+
+                    const timer = setInterval(() => {
+                        countdownNum--;
+                        if (countdownNum > 0) {
+                            subText.innerText = countdownNum;
+                            subText.style.transform = 'scale(1.3)';
+                            setTimeout(() => { subText.style.transform = 'scale(1)'; }, 150);
+                        } else {
+                            clearInterval(timer);
+                            
+                            subText.style.visibility = 'hidden'; 
+                            document.getElementById('cake-main-text').classList.add('fade-out');
+                            
+                            setTimeout(() => {
+                                const finalMsg = document.getElementById('final-message');
+                                finalMsg.style.display = 'block';
+                                finalMsg.classList.add('pop-in-anim');
+                            }, 400); 
+                        }
+                    }, 1000);
+                }, 400); 
+            }
+        }
+
+        function fireConfetti() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff1493'];
+            for (let i = 0; i < 150; i++) {
+                const conf = document.createElement('div');
+                conf.classList.add('confetti');
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = -10 + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                if (Math.random() > 0.5) {
+                    conf.style.borderRadius = '50%';
+                    conf.style.width = (Math.random() * 10 + 5) + 'px';
+                    conf.style.height = conf.style.width;
+                } else {
+                    conf.style.width = (Math.random() * 10 + 5) + 'px';
+                    conf.style.height = (Math.random() * 15 + 10) + 'px';
+                }
+
+                conf.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                conf.style.animationDelay = (Math.random() * 2) + 's';
+                
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 8000);
+            }
+        }
+    </script>
+</body>
+</html>
